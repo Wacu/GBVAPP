@@ -12,6 +12,7 @@ st.write("""
 
 **You can enter *text* or fetch data from** *twitter*      
 """)
+st.subheader("Fetch data")
 
 st.sidebar.header("Please Input the below Parameters")
 
