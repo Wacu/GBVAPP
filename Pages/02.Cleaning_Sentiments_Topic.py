@@ -20,12 +20,15 @@ if option=='Choose data from DB':
         if submitted: 
             
             data=read_data(int(number_of_rows),tablename)
-            st.success(f'The data of {data.shape[0]} has been successful loaded')
+            st.success(f'The data of {data.shape[0]} has been successful loaded, below is a sample of the data')
             st.table(data.head(2)) 
 
-expander_clean=st.expander('This section View the Selected Data and Go through the Cleaning Process👇')
-options_clean=st.selectbox('Select Text  Cleaning Steps',['Text Cleaner'],label_visibility="visible" )
 
+expander_clean=st.expander('This section View the Selected Data and Go through the Cleaning Process👇')
+
+options_clean=st.selectbox('Select Text  Cleaning Steps',['Steps','Text Cleaner'],label_visibility="visible" )
+if options_clean == 'Steps':
+    pass
 if options_clean == 'Text Cleaner':
     data=read_data(int(number_of_rows),tablename)
     data['clean_text'] = data['text'].apply(text_cleaning)
@@ -49,7 +52,8 @@ if option_sentiment=='Sentiment Analysis':
             
             data['sentiment'] = data['clean_text'].apply(vader_sentiment)
             st.success('Sentiments have been generated!')
-            st.table(data['sentiment'].value_counts(normalize=True))     
+            st.table(data['sentiment'].value_counts(normalize=True)) 
+            st.bar_chart(data['sentiment'].value_counts(normalize=True))    
 if option_sentiment == 'Topic Modelling':
     pass
 
