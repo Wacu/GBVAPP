@@ -42,7 +42,7 @@ if option_sentiment == 'Select one of the below':
 
 if option_sentiment=='Sentiment Analysis':
 
-    with st.form("my_form2"):
+    with st.form("my_sentiment"):
 
         generate =  st.form_submit_button("Generate")
         if generate: 
