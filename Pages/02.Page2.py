@@ -1,5 +1,7 @@
 import streamlit as st
 from apps.db import *
+from apps.cleaning import *
+from apps.sentiments import *
 
 tablename='scrape_tweets'
 
@@ -25,11 +27,30 @@ expander_clean=st.expander('This section View the Selected Data and Go through t
 options_clean=st.selectbox('Select Text  Cleaning Steps',['Text Cleaner'],label_visibility="visible" )
 
 if options_clean == 'Text Cleaner':
-    data = cleaning(read_data(int(number_of_rows),tablename))
-    
+    data=read_data(int(number_of_rows),tablename)
+    data['clean_text'] = data['text'].apply(text_cleaning)
+    st.success('The data has been cleaned,please compare the original and the clean tweet')
+    st.table(data[['text','clean_text']].head(5))
+
+# options_sentiment = st.selectbox('Sel')  
+#   vader_sentiment         
+
+option_sentiment = st.selectbox('Select a step ',['Select one of the below','Sentiment Analysis', 'Topic Modelling'],index=0)
+
+if option_sentiment == 'Select one of the below':
+    pass
+
+if option_sentiment=='Sentiment Analysis':
+
+    with st.form("my_form2"):
+
+        generate =  st.form_submit_button("Generate")
+        if generate: 
             
-
-    
-
+            data['sentiment'] = data['clean_text'].apply(vader_sentiment)
+            st.success('Sentiments have been generated!')
+            st.table(data['sentiment'].value_counts(normalize=True))     
+if option_sentiment == 'Topic Modelling':
+    pass
 
 
