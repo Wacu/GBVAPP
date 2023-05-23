@@ -24,7 +24,9 @@ if option=='Choose data from DB':
 expander_clean=st.expander('This section View the Selected Data and Go through the Cleaning Process👇')
 options_clean=st.selectbox('Select Text  Cleaning Steps',['Text Cleaner'],label_visibility="visible" )
 
-
+if options_clean == 'Text Cleaner':
+    data = cleaning(read_data(int(number_of_rows),tablename))
+    
             
 
     
