@@ -4,7 +4,6 @@ from apps.functions import *
 from apps.db import *
 import geocoder
 
-
 #  SETTING PAGE CONFIG TO WIDE MODE AND ADDING A TITLE AND FAVICON
 st.set_page_config(layout="wide", page_title="GBV PREDICTION APP", page_icon=":woman:")
 
@@ -45,11 +44,12 @@ if option == 'Store in DB':
         data_returned=to_format_our_data_before_store(data_returned)
         create_table(data_returned,tablename)
         st.success('Data has been Stored Successful')
+        st.info('Please Proceed to the Next Page to conduct text Cleaning')
     except Exception as err:
         st.info(err)
 if option == 'Download Csv':
     download_csv_file(data_returned, 'tweets','Click here to download csv')
-
+    st.markdown('Proceed to the Next Page to conduct text Cleaning')
 
 
 
