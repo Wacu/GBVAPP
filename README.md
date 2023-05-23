@@ -11,7 +11,8 @@ An App to allow users to get predictions of forms of GBV from text data
 ## The App will give users the following interactions
 1. Fetch data from twitter based on location
 2. Download the data
-3. View sentiments
-4. View main topics/themes from the data
-5. Get the predicted forms of GBV
-6. Visually see the distribution of the forms on a MAP
+3. Clean the data
+4. View sentiments
+5. View main topics/themes from the data
+6. Get the predicted forms of GBV
+7. Visually see the distribution of the forms on a MAP
