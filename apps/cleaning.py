@@ -10,17 +10,13 @@ stop_words = set(nltk.corpus.stopwords.words('english'))
 from apps.db import *
 
 
-def cleaning(text):    
+def text_cleaning(text):    
     def pad_str(s):
         return ' '+s+' '
-    
-    if pd.isnull(text):
-        return ''
     
     # Empty question
     if type(text) != str or text=='':
         return ''
-
     # Clean the text
     text = str(text).lower()
     text = re.sub('\[.*?\]', '', text)

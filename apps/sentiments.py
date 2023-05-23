@@ -20,6 +20,6 @@ def vader_sentiment(text):
         return 'Neutral'
 
 #Using Textblob 
-def blob_sentiment(text):
-    blob_score = TextBlob(text).sentiment.polarity
-    return blob_score
+# def blob_sentiment(text):
+#     blob_score = TextBlob(text).sentiment.polarity
+#     return blob_score
