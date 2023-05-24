@@ -33,7 +33,7 @@ def GetTweet(api,latitude,longitude,radius,num_of_tweets):
     data = [[ tweet.created_at ,tweet.user.screen_name, tweet.user.location, tweet.text] for tweet in tweets]
 
     df = pd.DataFrame(data=data, columns=['date','user', 'location', 'text'])
-
+    
     return df
 
 
@@ -44,4 +44,6 @@ def download_csv_file(df,name,label_name):
     data=csv,
     file_name=f'{name}.csv',
     mime='text/csv',)
+
+
 

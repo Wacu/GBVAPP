@@ -6,6 +6,11 @@ import plotly as plt
 
 st.header('GBV APP')
 
+# st.set_page_config(
+#     page_title="Hello",
+#     page_icon="👋",
+# )
+
 
 hide_streamlit_style = """
             <style>

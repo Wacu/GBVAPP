@@ -2,6 +2,9 @@ import streamlit as st
 from apps.db import *
 from apps.cleaning import *
 from apps.sentiments import *
+from apps.eda import *
+
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 tablename='scrape_tweets'
 
@@ -38,7 +41,7 @@ if options_clean == 'Text Cleaner':
 # options_sentiment = st.selectbox('Sel')  
 #   vader_sentiment         
 
-option_sentiment = st.selectbox('Select a step ',['Select one of the below','Sentiment Analysis', 'Topic Modelling'],index=0)
+option_sentiment = st.selectbox('Select a step ',['Select one of the below','Sentiment Analysis','View WordCloud','Topic Modelling'],index=0)
 
 if option_sentiment == 'Select one of the below':
     pass
@@ -53,7 +56,15 @@ if option_sentiment=='Sentiment Analysis':
             data['sentiment'] = data['clean_text'].apply(vader_sentiment)
             st.success('Sentiments have been generated!')
             st.table(data['sentiment'].value_counts(normalize=True)) 
-            st.bar_chart(data['sentiment'].value_counts(normalize=True))    
+            st.bar_chart(data['sentiment'].value_counts(normalize=True)) 
+
+if option_sentiment == 'View WordCloud':
+    with st.form("wordcloud"):
+        view = st.form_submit_button("View")
+        if view:
+            cloud(' '.join(data['clean_text']))
+            st.success('The Bigger the font, the more the word was used in the tweets')
+
 if option_sentiment == 'Topic Modelling':
     pass
 

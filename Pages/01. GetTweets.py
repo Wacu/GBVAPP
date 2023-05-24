@@ -5,7 +5,7 @@ from apps.db import *
 import geocoder
 
 #  SETTING PAGE CONFIG TO WIDE MODE AND ADDING A TITLE AND FAVICON
-st.set_page_config(layout="wide", page_title="GBV PREDICTION APP", page_icon=":woman:")
+#st.set_page_config(layout="wide", page_title="GBV PREDICTION APP", page_icon=":woman:")
 
 st.write("""
 # An App to Predict the Form of Gender Based Violence
