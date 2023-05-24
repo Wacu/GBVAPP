@@ -1,6 +1,7 @@
 import tweepy
 import pandas  as pd
 import streamlit as st
+from geopy.geocoders import ArcGIS
 
 #####################     Define the Secret #################################
 
@@ -19,8 +20,20 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
+geolocater = ArcGIS()
 
-
+def GenCoordinates(location):
+    location_name = [location.strip() for loc in location.split(",")]
+    coordinates = []
+    for loc in location_name:
+        try:
+            geocoded_location = geolocater.geocode(loc)
+            if geocoded_location is not None:
+                coordinates.append((geocoded_location.latitude,geocoded_location.longitude))
+                return coordinates
+        except Exception as err:
+            st.error(f"Error geocoding location '{loc}' : {str(err)}")
+            
 def GetTweet(api,latitude,longitude,radius,num_of_tweets):
  
     tweets = tweepy.Cursor(api.search_tweets
@@ -33,7 +46,7 @@ def GetTweet(api,latitude,longitude,radius,num_of_tweets):
     data = [[ tweet.created_at ,tweet.user.screen_name, tweet.user.location, tweet.text] for tweet in tweets]
 
     df = pd.DataFrame(data=data, columns=['date','user', 'location', 'text'])
-    
+    df['coordinates'] = df['location'].apply(GenCoordinates)
     return df
 
 
