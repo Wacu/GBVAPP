@@ -22,15 +22,27 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 geolocater = ArcGIS()
 
-def GenCoordinates(location):
+def GenCoordinateslat(location):
     location_name = [location.strip() for loc in location.split(",")]
-    coordinates = []
+    lat = []
     for loc in location_name:
         try:
             geocoded_location = geolocater.geocode(loc)
             if geocoded_location is not None:
-                coordinates.append((geocoded_location.latitude,geocoded_location.longitude))
-                return coordinates
+                lat.append((round(geocoded_location.latitude,2)))
+                return lat
+        except Exception as err:
+            st.error(f"Error geocoding location '{loc}' : {str(err)}")
+
+def GenCoordinateslon(location):
+    location_name = [location.strip() for loc in location.split(",")]
+    lon = []
+    for loc in location_name:
+        try:
+            geocoded_location = geolocater.geocode(loc)
+            if geocoded_location is not None:
+                lon.append((round(geocoded_location.longitude,2)))
+                return lon
         except Exception as err:
             st.error(f"Error geocoding location '{loc}' : {str(err)}")
             
@@ -46,7 +58,12 @@ def GetTweet(api,latitude,longitude,radius,num_of_tweets):
     data = [[ tweet.created_at ,tweet.user.screen_name, tweet.user.location, tweet.text] for tweet in tweets]
 
     df = pd.DataFrame(data=data, columns=['date','user', 'location', 'text'])
-    df['coordinates'] = df['location'].apply(GenCoordinates)
+    #df['lon'] = float(df['location'].apply(GenCoordinateslon)[0][0])
+    #df['lat'] = float(df['location'].apply(GenCoordinateslat)[0][0])
+    #df[['lat','lon']] = zip(*df['coordinates'])
+    #newdf= pd.DataFrame(zip(*df['coordinates']),columns=[f'column{i+1}'for i in range(len(df['coordinates']))])
+
+    #df['max'] = df['coordinates'].str.count(',') + 1
     return df
 
 

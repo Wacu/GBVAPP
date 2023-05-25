@@ -10,7 +10,7 @@ def create_table(df,tablename):
 
     try:
         conn = sqlite3.connect('tweets.db')
-        df.to_sql(tablename, conn, if_exists='replace', index=False)
+        df.to_sql(tablename, conn, if_exists='append', index=False,dtype='REAL')
         conn.close()  
     except Exception as error:
         print(error)

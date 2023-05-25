@@ -3,6 +3,7 @@ from apps.db import *
 from apps.cleaning import *
 from apps.sentiments import *
 from apps.eda import *
+from apps.functions import *
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -66,6 +67,7 @@ if option_sentiment == 'View WordCloud':
             st.success('The Bigger the font, the more the word was used in the tweets')
 
 if option_sentiment == 'Topic Modelling':
+    st.map(data['coordinates'])
     pass
 
 
