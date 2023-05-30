@@ -30,30 +30,38 @@ if all(param is not None for param in [location, radius_location, num_tweets]):
     latitude   = geocoder.arcgis(location).lat
     longitude  = geocoder.arcgis(location).lng
     data_returned = GetTweet(api,latitude,longitude,radius_location,num_tweets)
-    st.table(data_returned.head(10))
+    if data_returned.empty :
+        pass
+    else :
+        data_returned['lon'] = float(data_returned['location'].apply(GenCoordinateslon)[0][0])
+        data_returned['lat'] = float(data_returned['location'].apply(GenCoordinateslat)[0][0])
+        st.table(data_returned.head(10))
+
+        option = st.selectbox('Choose the mode of Storage',['Choose method','Store in DB', 'Download Csv'],index=0)
+
+        tablename='scrape_tweets'
+
+
+        if option == 'Choose method':
+            pass
+        if option == 'Store in DB':
+            try:
+                data_returned=to_format_our_data_before_store(data_returned)
+                create_table(data_returned,tablename)
+                st.success('Data has been Stored Successful')
+                st.info('Please Proceed to the Next Page to conduct text Cleaning')
+                
+            except Exception as err:
+                st.info(err)
+        if option == 'Download Csv':
+            #st.map(data_returned)
+            download_csv_file(data_returned, 'tweets','Click here to download csv')
+            st.markdown('Proceed to the Next Page to conduct text Cleaning')
+
+
 else:
     st.info('Input all paramaters')
 
-option = st.selectbox('Choose the mode of Storage',['Choose method','Store in DB', 'Download Csv'],index=0)
-
-tablename='scrape_tweets'
-
-
-if option == 'Choose method':
-    pass
-if option == 'Store in DB':
-    try:
-        data_returned=to_format_our_data_before_store(data_returned)
-        create_table(data_returned,tablename)
-        st.success('Data has been Stored Successful')
-        st.info('Please Proceed to the Next Page to conduct text Cleaning')
-        
-    except Exception as err:
-        st.info(err)
-if option == 'Download Csv':
-    #st.map(data_returned)
-    download_csv_file(data_returned, 'tweets','Click here to download csv')
-    st.markdown('Proceed to the Next Page to conduct text Cleaning')
 
 
 

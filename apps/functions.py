@@ -47,7 +47,7 @@ def GenCoordinateslon(location):
             st.error(f"Error geocoding location '{loc}' : {str(err)}")
             
 def GetTweet(api,latitude,longitude,radius,num_of_tweets):
- 
+    
     tweets = tweepy.Cursor(api.search_tweets
                            ,q=search_words,
                             geocode = f'{latitude},{longitude},{radius}km',
@@ -58,8 +58,9 @@ def GetTweet(api,latitude,longitude,radius,num_of_tweets):
     data = [[ tweet.created_at ,tweet.user.screen_name, tweet.user.location, tweet.text] for tweet in tweets]
 
     df = pd.DataFrame(data=data, columns=['date','user', 'location', 'text'])
-    #df['lon'] = float(df['location'].apply(GenCoordinateslon)[0][0])
-    #df['lat'] = float(df['location'].apply(GenCoordinateslat)[0][0])
+    # df['lon'] = float(df['location'].apply(GenCoordinateslon)[0][0])
+    # df['lat'] = float(df['location'].apply(GenCoordinateslat)[0][0])
+    # print(df['lat'])
     #df[['lat','lon']] = zip(*df['coordinates'])
     #newdf= pd.DataFrame(zip(*df['coordinates']),columns=[f'column{i+1}'for i in range(len(df['coordinates']))])
 
@@ -77,3 +78,4 @@ def download_csv_file(df,name,label_name):
 
 
 
+#SELECT * FROM your_table ORDER BY RANDOM() LIMIT 10;
