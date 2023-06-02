@@ -18,7 +18,7 @@ st.subheader("Fetch data")
 st.sidebar.header("Please Input the below Parameters")
 
 with st.sidebar.form("my_form"):
-
+    #search_words =   st.text_input('Enter topic')
     location =   st.text_input('Enter the Location')
     radius_location =   st.text_input('Enter the Radius')
     num_tweets = st.number_input('Enter the number of tweets',1,1000,50)
@@ -29,7 +29,7 @@ if all(param is not None for param in [location, radius_location, num_tweets]):
 
     latitude   = geocoder.arcgis(location).lat
     longitude  = geocoder.arcgis(location).lng
-    data_returned = GetTweet(api,latitude,longitude,radius_location,num_tweets)
+    data_returned = GetTweet(api,latitude,longitude,radius_location,num_tweets,search_words)
     if data_returned.empty :
         pass
     else :

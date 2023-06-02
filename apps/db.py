@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import warnings
+from datetime import datetime as dt
 warnings.filterwarnings('ignore')
 
 query = "SELECT * FROM users"
@@ -28,12 +29,9 @@ def read_data(numrows,tablename):
         print(error)
 
 def to_format_our_data_before_store(df):
-
-
     df['date_'] = df['date'].dt.strftime('%d/%m/%Y')
     df['date_']= pd.to_datetime(df['date_'])
     df.drop(columns=['date'],inplace=True)
-
     return df
 
 

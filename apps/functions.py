@@ -46,7 +46,7 @@ def GenCoordinateslon(location):
         except Exception as err:
             st.error(f"Error geocoding location '{loc}' : {str(err)}")
             
-def GetTweet(api,latitude,longitude,radius,num_of_tweets):
+def GetTweet(api,latitude,longitude,radius,num_of_tweets,search_words):
     
     tweets = tweepy.Cursor(api.search_tweets
                            ,q=search_words,
