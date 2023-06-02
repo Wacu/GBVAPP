@@ -67,7 +67,10 @@ if option_sentiment == 'View WordCloud':
             st.success('The Bigger the font, the more the word was used in the tweets')
 
 if option_sentiment == 'Topic Modelling':
-    st.map(data['coordinates'])
-    pass
+    most_freq_words(data['clean_text'])
+    bigrams(data['clean_text'])
+    trigrams(data['clean_text'])
+    #st.map(data)
+    #pass
 
 

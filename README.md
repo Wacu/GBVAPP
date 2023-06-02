@@ -16,3 +16,4 @@ An App to allow users to get predictions of forms of GBV from text data
 5. View main topics/themes from the data
 6. Get the predicted forms of GBV
 7. Visually see the distribution of the forms on a MAP
+
