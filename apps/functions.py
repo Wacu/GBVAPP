@@ -1,8 +1,7 @@
-import tweepy
 import pandas  as pd
 import streamlit as st
-from geopy.geocoders import ArcGIS
 
+'''
 #####################     Define the Secret #################################
 
 consumer_key         ='16b7VCeoiTxSuNNRqjGPBSIws'
@@ -66,7 +65,7 @@ def GetTweet(api,latitude,longitude,radius,num_of_tweets,search_words):
 
     #df['max'] = df['coordinates'].str.count(',') + 1
     return df
-
+'''
 
 def download_csv_file(df,name,label_name):
     csv=df.to_csv().encode('utf-8')

@@ -7,26 +7,8 @@ from apps.functions import *
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-tablename='scrape_tweets'
-
-option = st.selectbox('Select data ',['Select one of the below','Choose data from DB', 'Upload Data'],index=0)
-
-if option == 'Select one of the below':
-    pass
-
-if option=='Choose data from DB':
-
-    with st.form("my_form"):
-        # select_table    =   st.selectbox('Select Table',[read_number_tables])
-        number_of_rows  =   st.number_input('Number of Rows')
-
-        submitted =  st.form_submit_button("Submit")
-        if submitted: 
-            
-            data=read_data(int(number_of_rows),tablename)
-            st.success(f'The data of {data.shape[0]} has been successful loaded, below is a sample of the data')
-            st.table(data.head(2)) 
-
+tablename='unlabelled'
+num_tweets=50
 
 expander_clean=st.expander('This section View the Selected Data and Go through the Cleaning Process👇')
 
@@ -34,10 +16,10 @@ options_clean=st.selectbox('Select Text  Cleaning Steps',['Steps','Text Cleaner'
 if options_clean == 'Steps':
     pass
 if options_clean == 'Text Cleaner':
-    data=read_data(int(number_of_rows),tablename)
-    data['clean_text'] = data['text'].apply(text_cleaning)
+    data=read_data(int(num_tweets),tablename)
+    data['clean_tweet'] = data['tweet'].apply(text_cleaning)
     st.success('The data has been cleaned,please compare the original and the clean tweet')
-    st.table(data[['text','clean_text']].head(5))
+    st.table(data[['tweet','clean_tweet']].head(5))
 
 # options_sentiment = st.selectbox('Sel')  
 #   vader_sentiment         
@@ -54,22 +36,47 @@ if option_sentiment=='Sentiment Analysis':
         generate =  st.form_submit_button("Generate")
         if generate: 
             
-            data['sentiment'] = data['clean_text'].apply(vader_sentiment)
+            data['sentiment_vader'] = data['clean_tweet'].apply(lambda x : vader_sentiment_scores(x))
+            data['sentiment_blob']= data['clean_tweet'].apply(lambda x:TextBlob(x).sentiment.polarity)
+            #st.table(data['sentiment_vader'].value_counts(normalize=True)) 
+            #st.bar_chart(data['sentiment'].value_counts(normalize=True)) 
+           
+            figure, axes = plt.subplots(1, 2, sharex=True, figsize=(15,5))
+            figure.suptitle('Sentiment Analysis using Textblob vs Vader')
+
+            sns.histplot(ax= axes[0] ,data=data, x='sentiment_vader',kde=True)
+            sns.histplot(ax= axes[1],data=data, x='sentiment_blob',kde=True)
+            axes[0].set_title('Sentiments by Vader')
+            axes[1].set_title('Sentiments by Textblob')
+            st.pyplot()
+
+            # VADER
+            st.subheader("Deeper into VADER")
+            data['vader_sent'] = data['sentiment_vader'].apply(get_sentiment)
+            data.head()
+            data['vader_sent'].value_counts(normalize=True)
+            p = data['vader_sent'].value_counts(normalize=True)
+            p = p.rename("proportion").reset_index()
+
+            sns.barplot(data=p, y='proportion', x='vader_sent',hue='vader_sent')
+            plt.title("Sentiment distribution")
+            plt.xlabel("Sentiment Score")
+            plt.ylabel("Proportion")
+            st.pyplot()
             st.success('Sentiments have been generated!')
-            st.table(data['sentiment'].value_counts(normalize=True)) 
-            st.bar_chart(data['sentiment'].value_counts(normalize=True)) 
 
 if option_sentiment == 'View WordCloud':
     with st.form("wordcloud"):
         view = st.form_submit_button("View")
         if view:
-            cloud(' '.join(data['clean_text']))
+            yearsummary(data['year'])
+            cloud(' '.join(data['clean_tweet']))
             st.success('The Bigger the font, the more the word was used in the tweets')
 
 if option_sentiment == 'Topic Modelling':
-    most_freq_words(data['clean_text'])
-    bigrams(data['clean_text'])
-    trigrams(data['clean_text'])
+    most_freq_words(data['clean_tweet'])
+    bigrams(data['clean_tweet'])
+    trigrams(data['clean_tweet'])
     #st.map(data)
     #pass
 
