@@ -6,22 +6,34 @@ warnings.filterwarnings('ignore')
 
 query = "SELECT * FROM users"
 tablename='unlabelled'
+tablename2='selected'
 
-'''
-def create_table(df,tablename):
+
+def create_table(df,tablename2):
 
     try:
         conn = sqlite3.connect('gbv.db')
-        df.to_sql(tablename, conn, if_exists='append', index=False,dtype='REAL')
+        df.to_sql(tablename2, conn, if_exists='replace', index=False,dtype='REAL')
         conn.close()  
     except Exception as error:
         print(error)
-'''
+
 
 def read_data(numrows,tablename):
 
     try:
         query = f"SELECT  * FROM {tablename} LIMIT {numrows}"
+        conn = sqlite3.connect('gbv.db')
+        df = pd.read_sql_query(query, conn)
+        conn.close() 
+        return df 
+    except Exception as error:
+        print(error)
+
+def read_selected_data(tablename2):
+
+    try:
+        query = f"SELECT  * FROM {tablename2}"
         conn = sqlite3.connect('gbv.db')
         df = pd.read_sql_query(query, conn)
         conn.close() 

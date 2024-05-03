@@ -21,7 +21,7 @@ def yearsummary(y):
 
 def cloud(data,backgroundcolor = 'white', width = 1500, height = 800):
     wordcloud = WordCloud(background_color = backgroundcolor,
-                         width = width, height = height,max_words=1000,contour_color='steelblue',contour_width=4).generate(data)
+                         width = width, height = height,max_words=50,contour_color='steelblue',contour_width=4).generate(data)
     plt.figure(figsize = (12, 8))
     plt.imshow(wordcloud)
     plt.axis("off")

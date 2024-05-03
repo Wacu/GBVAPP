@@ -7,8 +7,7 @@ from apps.functions import *
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-tablename='unlabelled'
-num_tweets=50
+tablename2='selected'
 
 expander_clean=st.expander('This section View the Selected Data and Go through the Cleaning Process👇')
 
@@ -16,10 +15,12 @@ options_clean=st.selectbox('Select Text  Cleaning Steps',['Steps','Text Cleaner'
 if options_clean == 'Steps':
     pass
 if options_clean == 'Text Cleaner':
-    data=read_data(int(num_tweets),tablename)
-    data['clean_tweet'] = data['tweet'].apply(text_cleaning)
-    st.success('The data has been cleaned,please compare the original and the clean tweet')
-    st.table(data[['tweet','clean_tweet']].head(5))
+    data=read_selected_data(tablename2)
+    data['clean_tweet'] = data['tweet'].apply(text_cleaning).apply(lem)
+    stop = stopwords.words('english')
+    data['lemma_nostops'] = data['clean_tweet'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
+    st.success('The data has been cleaned and lematized,please compare the original, clean and lemmatized tweet')
+    st.table(data[['tweet','clean_tweet','lemma_nostops']].head(5))
 
 # options_sentiment = st.selectbox('Sel')  
 #   vader_sentiment         
@@ -36,8 +37,8 @@ if option_sentiment=='Sentiment Analysis':
         generate =  st.form_submit_button("Generate")
         if generate: 
             
-            data['sentiment_vader'] = data['clean_tweet'].apply(lambda x : vader_sentiment_scores(x))
-            data['sentiment_blob']= data['clean_tweet'].apply(lambda x:TextBlob(x).sentiment.polarity)
+            data['sentiment_vader'] = data['lemma_nostops'].apply(lambda x : vader_sentiment_scores(x))
+            data['sentiment_blob']= data['lemma_nostops'].apply(lambda x:TextBlob(x).sentiment.polarity)
             #st.table(data['sentiment_vader'].value_counts(normalize=True)) 
             #st.bar_chart(data['sentiment'].value_counts(normalize=True)) 
            
@@ -66,18 +67,16 @@ if option_sentiment=='Sentiment Analysis':
             st.success('Sentiments have been generated!')
 
 if option_sentiment == 'View WordCloud':
-    with st.form("wordcloud"):
-        view = st.form_submit_button("View")
-        if view:
-            yearsummary(data['year'])
-            cloud(' '.join(data['clean_tweet']))
-            st.success('The Bigger the font, the more the word was used in the tweets')
+    yearsummary(data['year'])
+    cloud(' '.join(data['lemma_nostops']))
+    st.success('The Bigger the font, the more the word was used in the tweets')
 
 if option_sentiment == 'Topic Modelling':
-    most_freq_words(data['clean_tweet'])
-    bigrams(data['clean_tweet'])
-    trigrams(data['clean_tweet'])
+    most_freq_words(data['lemma_nostops'])
+    bigrams(data['lemma_nostops'])
+    trigrams(data['lemma_nostops'])
     #st.map(data)
     #pass
+    #most_freq_words(df['lemma_nostops'])
 
 
