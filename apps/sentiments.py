@@ -23,3 +23,21 @@ def vader_sentiment(text):
 # def blob_sentiment(text):
 #     blob_score = TextBlob(text).sentiment.polarity
 #     return blob_score
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from textblob import TextBlob
+
+vader_sentiment=SentimentIntensityAnalyzer()
+
+def vader_sentiment_scores(text):
+    score = vader_sentiment.polarity_scores(text)
+    return score['compound']
+
+def get_sentiment(score):
+
+    if score < 0 :
+        return "neg"
+    elif score > 0 :
+        return 'pos'
+    else:
+        return 'neu'
+

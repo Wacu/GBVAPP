@@ -9,6 +9,15 @@ plt.style.use('fivethirtyeight')
 
 
 #def bar_plot(data,)
+def yearsummary(y):
+    plt.figure(figsize=(8, 6))
+    y.value_counts(normalize=True).sort_index().plot(kind='barh', color='skyblue')
+    plt.xlabel('Year')
+    plt.ylabel('Proportion')
+    plt.title('Proportion of Data Over the Years')
+    plt.xticks(rotation=0)
+    plt.grid(False)
+    st.pyplot()
 
 def cloud(data,backgroundcolor = 'white', width = 1500, height = 800):
     wordcloud = WordCloud(background_color = backgroundcolor,
