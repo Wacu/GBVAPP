@@ -16,11 +16,12 @@ st.subheader("Fetch data")
 
 st.sidebar.header("Please Input the below Parameters")
 tablename='unlabelled'
+tablename2='selected'
 with st.sidebar.form("my_form1"):
     #search_words =   st.text_input('Enter topic')
     #location =   st.text_input('Enter the Location')
     #radius_location =   st.text_input('Enter the Radius')
-    num_tweets = st.number_input('Enter the number of tweets',1,1000,50)
+    num_tweets = st.number_input('Enter the number of tweets',1,100000,50)
 
     submitted =  st.form_submit_button("Submit")
 
@@ -45,6 +46,8 @@ if option=='View the data':
             data=read_data(int(num_tweets),tablename)
             st.success(f'The data of {data.shape[0]} has been successful loaded, below is a sample of the data')
             st.table(data.head(5)) 
+            data = create_table(data,tablename2)
+        
 
 
 else:
