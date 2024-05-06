@@ -14,6 +14,7 @@ from apps.functions import *
 from apps.cleaning import *
 from apps.eda import *
 from apps.sentiments import *
+from apps.models import *
 
 
 
@@ -33,9 +34,9 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # Load models
 
 loaded_models= joblib.load('models.joblib')
-
-Logistic_Regression=loaded_models[0].name
-svm=loaded_models[1].name
+print(loaded_models)
+Logistic_Regression=list(loaded_models.keys())[0]
+svm=list(loaded_models.keys())[1]
 
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -45,7 +46,7 @@ st.markdown('This Section detects the form of GBV in Tweets using the Trained mo
     ')
 st.write('\n')
 
-choice=st.sidebar.selectbox('Detect by ',['Text Input', 'Cleaned Data'])
+choice=st.sidebar.selectbox('Detect by ',['Text Input', 'Use Cleaned Data'])
   
 if choice == 'Text Input':
     with st.form('my_form'):  
@@ -66,20 +67,26 @@ if choice == 'Text Input':
     def label_prediction(predicted): 
         
         if predicted==0:   
-            return 'No Hate'
+            return 'Economic Violence'
+        elif predicted==1:
+            return 'Emotional Violence'
+        elif predicted==2:
+            return 'Physical Violence'
+        elif predicted==3:
+            return 'Sexual Violence'
         else:
-            return 'Hate'
-
+            return 'No violence detected'
+    #list(loaded_models.keys())[0]
     if  model_choice == model_options[1]:# Logistic Regression
-        prediction_choice=predict_function(text,loaded_models[0])
+        prediction_choice=predict_function(text,list(loaded_models.values())[0])
         prediction_label=label_prediction(prediction_choice[0])
         prediction_proba=np.round(prediction_choice[1][0][0] *100,0)    
     elif model_choice ==model_options[2]:#svm
-        prediction_choice=predict_function(text,loaded_models[10])
+        prediction_choice=predict_function(text,list(loaded_models.values())[1])
         prediction_label=label_prediction(prediction_choice[0])
         prediction_proba=np.round(prediction_choice[1][0][1] *100,0)   
     else :
-        prediction_choice=predict_function(text,loaded_models[6])
+        prediction_choice=predict_function(text,list(loaded_models.values())[1])
         prediction_label=label_prediction(prediction_choice[0])
         prediction_proba=np.round(prediction_choice[1][0][1] *100,0)
                 
