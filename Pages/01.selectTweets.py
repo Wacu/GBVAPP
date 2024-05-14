@@ -10,9 +10,9 @@ from apps.db import *
 st.write("""
 # An App to Predict the Form of Gender Based Violence
 
-**You can enter *text* or fetch data from** *twitter*      
+**Fetch Data from an X(twitter) GBV Database*      
 """)
-st.subheader("Fetch data")
+st.subheader("You can do this!")
 
 st.sidebar.header("Please Input the below Parameters")
 tablename='unlabelled'
@@ -24,34 +24,33 @@ with st.sidebar.form("my_form1"):
     num_tweets = st.number_input('Enter the number of tweets',1,100000,50)
 
     submitted =  st.form_submit_button("Submit")
+if submitted:
+    #if all(param is not None for param in [num_tweets]):
+    option = st.selectbox('Select data ',['Select one of the below','View the data', 'Proceed to Data Cleaning'],index=0)
 
-if all(param is not None for param in [num_tweets]):
+    if option == 'Select one of the below':
+        pass
+    if option == 'Proceed to Data Cleaning':
+        'On your left pane, click on 02. Cleaning'
 
-    #latitude   = geocoder.arcgis(location).lat
-    #longitude  = geocoder.arcgis(location).lng
-    option = st.selectbox('Select data ',['Select one of the below','View the data', 'Upload Data'],index=0)
+    if option=='View the data':
 
-if option == 'Select one of the below':
-    pass
+        with st.form("my_form2"):
+            # select_table    =   st.selectbox('Select Table',[read_number_tables])
+            #number_of_rows  =   st.number_input('Number of Rows')
 
-if option=='View the data':
-
-    with st.form("my_form2"):
-        # select_table    =   st.selectbox('Select Table',[read_number_tables])
-        #number_of_rows  =   st.number_input('Number of Rows')
-
-        submitted =  st.form_submit_button("Submit")
-        if submitted: 
-            
-            data=read_data(int(num_tweets),tablename)
-            st.success(f'The data of {data.shape[0]} has been successful loaded, below is a sample of the data')
-            st.table(data.head(5)) 
-            data = create_table(data,tablename2)
-        
+            submitted =  st.form_submit_button("Submit")
+            if submitted: 
+                
+                data=read_data(int(num_tweets),tablename)
+                st.success(f'The data of {data.shape[0]} has been successful loaded, below is a sample of the data')
+                st.table(data.head(5)) 
+                data = create_table(data,tablename2)
+                
 
 
-else:
-    st.info('Input all paramaters')
+    #else:
+    #st.info('Input all paramaters')
 
 
 

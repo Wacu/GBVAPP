@@ -29,7 +29,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 
 
-
+tablename3='cleaned'
 
 # Load models
 
@@ -86,6 +86,7 @@ if choice == 'Text Input':
         prediction_label=label_prediction(prediction_choice[0])
         prediction_proba=np.round(prediction_choice[1][0][1] *100,0)   
     else :
+        'Select a model of choice'
         prediction_choice=predict_function(text,list(loaded_models.values())[1])
         prediction_label=label_prediction(prediction_choice[0])
         prediction_proba=np.round(prediction_choice[1][0][1] *100,0)
@@ -96,4 +97,50 @@ if choice == 'Text Input':
     st.write('Prediction Probability')
     st.info(prediction_proba)
 
+if choice == "Use Cleaned Data":
+    data=read_selected_data(tablename3)
+    text=[]
+    predictions =[]
+    with st.form('cleaned'):
+        model_options2=['Choose model','Logistic Regression','SVM']
+        model_choice2= st.selectbox('Trained  Classify Models Availabe',model_options2)
+        submitted_clean= st.form_submit_button('Predict GBV form')
+        if submitted_clean:
+            def predict_function(text,model):   
+                X=FunctionText2Vec(text)
+                predicted=model.predict(X)
+                predicted_prob=model.predict_proba(X)
+                return predicted , predicted_prob                                                                                                                  
+        
+            def label_prediction(predicted): 
+                if predicted==0:   
+                    return 'Economic Violence'
+                elif predicted==1:
+                    return 'Emotional Violence'
+                elif predicted==2:
+                    return 'Physical Violence'
+                elif predicted==3:
+                    return 'Sexual Violence'
+                else:
+                    return 'No violence detected'
+                
+            if  model_choice2 == model_options2[1]:# Logistic Regression
+                prediction_choice=predict_function(text,list(loaded_models.values())[0])
+                prediction_label=label_prediction(prediction_choice[0])
+                prediction_proba=np.round(prediction_choice[1][0][0] *100,0)    
+            elif model_choice2 ==model_options2[2]:#svm
+                prediction_choice=predict_function(text,list(loaded_models.values())[1])
+                prediction_label=label_prediction(prediction_choice[0])
+                prediction_proba=np.round(prediction_choice[1][0][1] *100,0)   
+            else :
+                prediction_choice=predict_function(text,list(loaded_models.values())[1])
+                prediction_label=label_prediction(prediction_choice[0])
+                prediction_proba=np.round(prediction_choice[1][0][1] *100,0)
+                        
+            st.subheader('Results')
+            st.write('Prediction Labels')
+            st.success(prediction_label)
+            st.write('Prediction Probability')
+            st.info(prediction_proba)
+            
 

@@ -8,6 +8,7 @@ from apps.functions import *
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 tablename2='selected'
+tablename3='cleaned'
 
 expander_clean=st.expander('This section View the Selected Data and Go through the Cleaning Process👇')
 
@@ -21,12 +22,13 @@ if options_clean == 'Text Cleaner':
     data['lemma_nostops'] = data['clean_tweet'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
     st.success('The data has been cleaned and lematized,please compare the original, clean and lemmatized tweet')
     st.table(data[['tweet','clean_tweet','lemma_nostops']].head(5))
+    data = create_table(data,tablename3)
 
 # options_sentiment = st.selectbox('Sel')  
 #   vader_sentiment         
 
 option_sentiment = st.selectbox('Select a step ',['Select one of the below','Sentiment Analysis','View WordCloud','Topic Modelling'],index=0)
-
+data=read_selected_data(tablename3)
 if option_sentiment == 'Select one of the below':
     pass
 
