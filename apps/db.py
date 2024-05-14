@@ -22,7 +22,7 @@ def create_table(df,tablename2):
 def read_data(numrows,tablename):
 
     try:
-        query = f"SELECT  * FROM {tablename} LIMIT {numrows}"
+        query = f"SELECT  * FROM {tablename}  order by RANDOM() LIMIT {numrows}"
         conn = sqlite3.connect('gbv.db')
         df = pd.read_sql_query(query, conn)
         conn.close() 
