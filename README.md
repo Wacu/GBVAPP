@@ -17,3 +17,24 @@ An App to allow users to get predictions of forms of GBV from text data
 6. Get the predicted forms of GBV
 7. Visually see the distribution of the forms on a MAP
 
+## Getting Started
+
+### Clone the repository
+```
+git clone https://github.com/Wacu/GBVAPP.git
+cd GBVAPP
+```
+
+### Install dependencies
+```
+python -m venv venv
+venv\Scripts\activate      # Windows
+source venv/bin/activate   # macOS/Linux
+pip install -r requirements.txt
+```
+
+### Run the app
+```
+streamlit run Home.py
+```
+
