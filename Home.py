@@ -6,12 +6,16 @@ from PIL import Image
 from pathlib import Path
 
 
-st.header('GBV APP')
+# set_page_config must be the first Streamlit call in the script, so it has to
+# precede st.header below. The banner in assets/ is 300x168, too wide to read as
+# a favicon, hence an emoji icon. layout="wide" matches pages/03.
+st.set_page_config(
+    page_title="GBV APP",
+    page_icon="📊",
+    layout="wide",
+)
 
-# st.set_page_config(
-#     page_title="Hello",
-#     page_icon="👋",
-# )
+st.header('GBV APP')
 
 
 hide_streamlit_style = """
