@@ -60,6 +60,6 @@ urllib3==2.7.0
 uvicorn==0.52.4
 vaderSentiment==3.3.2
 watchdog==6.0.0
-websockets==16.1.1
+websockets==17.0.1
 wordcloud==1.9.6
 wrapt==2.3.0
