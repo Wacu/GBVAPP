@@ -77,7 +77,9 @@ rather than committing a file. `.streamlit/secrets.toml` is gitignored.
   to the legacy pickle on 8,000 test vectors; the logistic regression's
   `predict_proba` is deliberately computed one-vs-rest, as trained. Regenerate
   with `python tools/export_model_params.py` and check with
-  `python tools/verify_model_equivalence.py`.
+  `python tools/verify_model_equivalence.py` (add `--real` to verify against
+  tweets embedded from `gbv.db` rather than synthetic vectors; that pass needs
+  the GloVe model, so it is opt-in).
 
   **This preserves the existing model faithfully; it does not make it correct.**
   The models are still 2020 artifacts of unknown accuracy, and the repo contains
