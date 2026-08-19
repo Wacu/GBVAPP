@@ -10,6 +10,10 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
 from apps.db import *
+from apps.nltk_setup import ensure_nltk_data
+
+# corpora are downloaded on first use; see apps/nltk_setup.py
+ensure_nltk_data()
 
 SPECIAL_TOKENS = {
     'quoted': 'quoted_item',
@@ -34,12 +38,12 @@ def text_cleaning(text, stem_words=True):
 
     # Clean the text
     text = str(text).lower()
-    text = re.sub('\[.*?\]', '', text)
-    text = re.sub('https?://\S+|www\.\S+', '', text)
+    text = re.sub('\\[.*?\\]', '', text)
+    text = re.sub('https?://\\S+|www\\.\\S+', '', text)
     text = re.sub('<.*?>+', '', text)
     text = re.sub("[%s]" % re.escape(string.punctuation), '', text)
     text = re.sub('\n', '', text)
-    text = re.sub("\w*\d\w*", "", text)
+    text = re.sub('\\w*\\d\\w*', "", text)
 
 
     text = re.sub("\'s", " ", text)
@@ -51,15 +55,15 @@ def text_cleaning(text, stem_words=True):
     text = re.sub("\'re", " are ", text)
     text = re.sub("\'d", " would ", text)
     text = re.sub("\'ll", " will ", text)
-    text = re.sub("e\.g\.", " eg ", text, flags=re.IGNORECASE)
-    text = re.sub("(\d+)(kK)", " \g<1>000 ", text)
+    text = re.sub('e\\.g\\.', " eg ", text, flags=re.IGNORECASE)
+    text = re.sub('(\\d+)(kK)', ' \\g<1>000 ', text)
     text = re.sub("e-mail", " email ", text, flags=re.IGNORECASE)
-    text = re.sub("\(s\)", " ", text, flags=re.IGNORECASE)
-    text = re.sub("[c-fC-F]\:\/", " disk ", text)
+    text = re.sub('\\(s\\)', " ", text, flags=re.IGNORECASE)
+    text = re.sub('[c-fC-F]\\:\\/', " disk ", text)
 
     # remove comma between numbers, i.e. 15,000 -> 15000
 
-    text = re.sub('(?<=[0-9])\,(?=[0-9])', "", text)
+    text = re.sub('(?<=[0-9])\\,(?=[0-9])', "", text)
 
     ## all numbers should separate from words, this is too aggressive
 
@@ -70,9 +74,9 @@ def text_cleaning(text, stem_words=True):
 
     # add padding to punctuations and special chars, we still need them later
 
-    text = re.sub('\$', " dollar ", text)
-    text = re.sub('\%', " percent ", text)
-    text = re.sub('\&', " and ", text)
+    text = re.sub('\\$', " dollar ", text)
+    text = re.sub('\\%', " percent ", text)
+    text = re.sub('\\&', " and ", text)
     text = re.sub('amp', "", text)
     text = re.sub('raped', "rape", text)
     text = re.sub('sexual', "sex", text)
@@ -82,7 +86,7 @@ def text_cleaning(text, stem_words=True):
     def pad_pattern(pattern):
        matched_string = pattern.group(0)
        return pad_str(matched_string)
-    text = re.sub('[\!\?\@\^\+\*\/\,\~\|\`\=\:\;\.\#\\\]', pad_pattern, text)
+    text = re.sub('[\\!\\?\\@\\^\\+\\*\\/\\,\\~\\|\\`\\=\\:\\;\\.\\#\\\\]', pad_pattern, text)
 
     text = re.sub('[^\x00-\x7F]+', pad_str(SPECIAL_TOKENS['non-ascii']), text) # replace non-ascii word with special word
 
@@ -94,7 +98,7 @@ def text_cleaning(text, stem_words=True):
 
     # replace the float numbers with a random number, it will be parsed as number afterward, and also been replaced with word "number"
 
-    text = re.sub('[0-9]+\.[0-9]+', " 87 ", text)
+    text = re.sub('[0-9]+\\.[0-9]+', " 87 ", text)
 
     text = re.sub("[^a-zA-Z]",  # Search for all non-letters
                           " ",          # Replace all non-letters with spaces

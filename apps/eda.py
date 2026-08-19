@@ -5,6 +5,10 @@ from wordcloud import WordCloud
 import nltk
 #import plotly as plt
 import matplotlib.pyplot as plt
+from apps.nltk_setup import ensure_nltk_data
+
+# corpora are downloaded on first use; see apps/nltk_setup.py
+ensure_nltk_data()
 plt.style.use('fivethirtyeight')
 
 

@@ -25,7 +25,7 @@ hide_streamlit_style = """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 st.title(" Natural Language Processing")
-current_dir = Path(__file__).parent if "__file__" in locals () else Path.cwd
+current_dir = Path(__file__).parent if "__file__" in locals() else Path.cwd()
 GBVImage = current_dir / "assets" / "GBV.png"
 GBVImage = Image.open(GBVImage)
-#st.image(icon,width=800)
+st.image(GBVImage, width=800)

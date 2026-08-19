@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 import nltk
 import pandas as pd
 import streamlit as st
+from apps.nltk_setup import ensure_nltk_data
+
+# corpora are downloaded on first use; see apps/nltk_setup.py
+ensure_nltk_data()
 def most_freq_words(corpus):
     top=20
     lst_tokens = nltk.tokenize.word_tokenize(corpus.str.cat(sep=" "))

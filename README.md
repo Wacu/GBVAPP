@@ -48,6 +48,17 @@ pip install -r requirements-lock.txt
 streamlit run Home.py
 ```
 
+On first run the app downloads the data it needs and caches it for later runs:
+
+- NLTK corpora `punkt_tab`, `stopwords` and `wordnet` (handled by
+  `apps/nltk_setup.py`; a few MB)
+- the `glove-wiki-gigaword-50` word vectors, on first use of the GBV-form
+  page (~66 MB)
+
+Note nltk 3.9 renamed the tokenizer data from `punkt` to `punkt_tab`, so a
+machine that has run older versions of this app may hold `punkt` and still need
+the new resource.
+
 
 
 ## Configuration
