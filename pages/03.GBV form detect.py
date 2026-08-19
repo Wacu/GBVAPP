@@ -40,6 +40,21 @@ Logistic_Regression=list(loaded_models.keys())[0]
 svm=list(loaded_models.keys())[1]
 
 
+def prediction_confidence(model, predicted, proba, row=0):
+    """Probability the model assigned to the class it actually predicted.
+
+    Looks the predicted label up in model.classes_ rather than assuming the
+    class value equals its column index. Note that for the SVM, predict()
+    (one-vs-one voting) and predict_proba() (Platt coupling) can disagree, so
+    this is not always the maximum probability -- it is the confidence in the
+    label being displayed, which is what the caller wants.
+    """
+    cls = predicted[row]
+    col = int(np.where(np.asarray(model.classes_) == cls)[0][0])
+    return np.round(proba[row][col] * 100, 0)
+
+
+
 st.title('GBV Form Detection')
 st.markdown('This Section detects the form of GBV in Tweets using the Trained models \
     ')
@@ -77,18 +92,21 @@ if choice == 'Text Input':
             return 'No violence detected'
     #list(loaded_models.keys())[0]
     if  model_choice == model_options[1]:# Logistic Regression
-        prediction_choice=predict_function(text,list(loaded_models.values())[0])
+        model=list(loaded_models.values())[0]
+        prediction_choice=predict_function(text,model)
         prediction_label=label_prediction(prediction_choice[0])
-        prediction_proba=np.round(prediction_choice[1][0][0] *100,0)    
+        prediction_proba=prediction_confidence(model,prediction_choice[0],prediction_choice[1])
     elif model_choice ==model_options[2]:#svm
-        prediction_choice=predict_function(text,list(loaded_models.values())[1])
+        model=list(loaded_models.values())[1]
+        prediction_choice=predict_function(text,model)
         prediction_label=label_prediction(prediction_choice[0])
-        prediction_proba=np.round(prediction_choice[1][0][1] *100,0)   
+        prediction_proba=prediction_confidence(model,prediction_choice[0],prediction_choice[1])
     else :
         'Select a model of choice'
-        prediction_choice=predict_function(text,list(loaded_models.values())[1])
+        model=list(loaded_models.values())[1]
+        prediction_choice=predict_function(text,model)
         prediction_label=label_prediction(prediction_choice[0])
-        prediction_proba=np.round(prediction_choice[1][0][1] *100,0)
+        prediction_proba=prediction_confidence(model,prediction_choice[0],prediction_choice[1])
                 
     st.subheader('Results')
     st.write('Prediction Labels')
@@ -124,17 +142,20 @@ if choice == "Use Cleaned Data":
                     return 'No violence detected'
                 
             if  model_choice2 == model_options2[1]:# Logistic Regression
-                prediction_choice=predict_function(text,list(loaded_models.values())[0])
+                model=list(loaded_models.values())[0]
+                prediction_choice=predict_function(text,model)
                 prediction_label=label_prediction(prediction_choice[0])
-                prediction_proba=np.round(prediction_choice[1][0][0] *100,0)    
+                prediction_proba=prediction_confidence(model,prediction_choice[0],prediction_choice[1])
             elif model_choice2 ==model_options2[2]:#svm
-                prediction_choice=predict_function(text,list(loaded_models.values())[1])
+                model=list(loaded_models.values())[1]
+                prediction_choice=predict_function(text,model)
                 prediction_label=label_prediction(prediction_choice[0])
-                prediction_proba=np.round(prediction_choice[1][0][1] *100,0)   
+                prediction_proba=prediction_confidence(model,prediction_choice[0],prediction_choice[1])
             else :
-                prediction_choice=predict_function(text,list(loaded_models.values())[1])
+                model=list(loaded_models.values())[1]
+                prediction_choice=predict_function(text,model)
                 prediction_label=label_prediction(prediction_choice[0])
-                prediction_proba=np.round(prediction_choice[1][0][1] *100,0)
+                prediction_proba=prediction_confidence(model,prediction_choice[0],prediction_choice[1])
                         
             st.subheader('Results')
             st.write('Prediction Labels')
