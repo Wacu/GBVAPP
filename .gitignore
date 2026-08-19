@@ -1,3 +1,14 @@
+# virtualenvs
 myenv/
+venv/
+.venv/
+
+# python bytecode
 __pycache__/
 *.pyc
+
+# streamlit secrets - never commit real credentials
+.streamlit/secrets.toml
+
+# local data / model artifacts that should not be versioned
+*.db-journal

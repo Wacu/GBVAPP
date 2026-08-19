@@ -34,12 +34,9 @@ tablename3='cleaned'
 # Load models
 
 loaded_models= joblib.load('models.joblib')
-print(loaded_models)
 Logistic_Regression=list(loaded_models.keys())[0]
 svm=list(loaded_models.keys())[1]
 
-
-st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.title('GBV Form Detection')
 st.markdown('This Section detects the form of GBV in Tweets using the Trained models \

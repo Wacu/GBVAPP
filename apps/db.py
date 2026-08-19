@@ -58,7 +58,6 @@ def read_number_tables():
     conn.close()
     return list_of_tables 
 
-print(read_number_tables)
 
 
 
