@@ -6,7 +6,6 @@ import pandas as pd
 from apps.functions import *
 from apps.models import FunctionText2Vec ,FunctionPredictUrgency
 #from st_aggrid import  AgGrid
-import joblib
 import numpy as np
 
 
@@ -15,6 +14,7 @@ from apps.cleaning import *
 from apps.eda import *
 from apps.sentiments import *
 from apps.models import *
+from apps.gbv_models import load_models
 
 
 
@@ -33,7 +33,9 @@ tablename3='cleaned'
 
 # Load models
 
-loaded_models= joblib.load('models.joblib')
+# models.npz is version-independent; see apps/gbv_models.py and
+# tools/export_model_params.py for why the joblib pickle was retired.
+loaded_models = load_models()
 Logistic_Regression=list(loaded_models.keys())[0]
 svm=list(loaded_models.keys())[1]
 
