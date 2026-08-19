@@ -4,10 +4,10 @@ import streamlit as st
 '''
 #####################     Define the Secret #################################
 
-consumer_key         ='16b7VCeoiTxSuNNRqjGPBSIws'
-consumer_secret      ='ytMKOh0hkRK7fOfgXpZXmoySXp1sekWU6lpspmpGHV8YHv1Ylg'
-access_token         ='1389549456916369408-1AxDbFYZ6dDzaIkpTPsGPKaURZMagz'
-access_token_secret  ='lmnidkW9ZsP5zLAnIrWPzIVpiQ3AhsFQsM9sVWSL5tGMd'
+consumer_key         = st.secrets["twitter"]["consumer_key"]
+consumer_secret      = st.secrets["twitter"]["consumer_secret"]
+access_token         = st.secrets["twitter"]["access_token"]
+access_token_secret  = st.secrets["twitter"]["access_token_secret"]
 
 ##################### Scrape Function ########################
 search_words = "#violence OR #genderbasedviolence OR #Activismagainstgbv OR #murder OR #gbv OR #SexualAbuse OR #DomesticAbuse OR #ViolenceAgainstWomen OR #harassment OR #femicide OR #rape OR #domesticviolence OR #sexualassault"

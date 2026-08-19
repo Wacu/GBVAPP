@@ -17,7 +17,7 @@ def yearsummary(y):
     plt.title('Proportion of Data Over the Years')
     plt.xticks(rotation=0)
     plt.grid(False)
-    st.pyplot()
+    st.pyplot(plt.gcf(), clear_figure=True)
 
 def cloud(data,backgroundcolor = 'white', width = 1500, height = 800):
     wordcloud = WordCloud(background_color = backgroundcolor,
@@ -26,7 +26,7 @@ def cloud(data,backgroundcolor = 'white', width = 1500, height = 800):
     plt.imshow(wordcloud)
     plt.axis("off")
     
-    st.pyplot()
+    st.pyplot(plt.gcf(), clear_figure=True)
 
 #Most Frequent words
 def most_freq_words(corpus):
@@ -38,7 +38,7 @@ def most_freq_words(corpus):
     dtf_bi = pd.DataFrame(dic_words_freq.most_common(),columns=["Word","Freq"])
     dtf_bi["Word"] = dtf_bi["Word"].apply(lambda x: " ".join(string for string in x))
     dtf_bi.set_index("Word").iloc[:top,:].sort_values(by="Freq").plot(kind="barh", title="Most Common words",legend=False,color='orange').grid(axis='x')
-    st.pyplot()
+    st.pyplot(plt.gcf(), clear_figure=True)
 
 def bigrams(corpus):
     top=10
@@ -49,7 +49,7 @@ def bigrams(corpus):
     dtf_bi = pd.DataFrame(dic_words_freq.most_common(),columns=["Word","Freq"])
     dtf_bi["Word"] = dtf_bi["Word"].apply(lambda x: " ".join(string for string in x))
     dtf_bi.set_index("Word").iloc[:top,:].sort_values(by="Freq").plot(kind="barh", title="Bigrams",legend=False,color='grey').grid(axis='x')
-    st.pyplot()
+    st.pyplot(plt.gcf(), clear_figure=True)
 
 def trigrams(corpus):
     top=10
@@ -60,4 +60,4 @@ def trigrams(corpus):
     dtf_bi = pd.DataFrame(dic_words_freq.most_common(),columns=["Word","Freq"])
     dtf_bi["Word"] = dtf_bi["Word"].apply(lambda x: " ".join(string for string in x))
     dtf_bi.set_index("Word").iloc[:top,:].sort_values(by="Freq").plot(kind="barh", title="Trigrams",legend=False,color='grey').grid(axis='x')
-    st.pyplot() 
+    st.pyplot(plt.gcf(), clear_figure=True) 

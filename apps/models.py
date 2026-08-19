@@ -6,20 +6,19 @@ import gensim
 import gensim.downloader as api
 
 
+@st.cache_resource(show_spinner="Loading GloVe word vectors (first run downloads ~66 MB)...")
 def load_model(model_name):
-    model = api.load(model_name)
-    return model
+    """Load pretrained vectors once per process; cached across reruns and sessions.
 
-model=load_model("glove-wiki-gigaword-50")
+    Previously this ran at import time and then copied every vector into a
+    400k-entry dict, so each Streamlit process re-downloaded and re-materialised
+    the model. The KeyedVectors object already provides keyed vector lookup.
+    """
+    return api.load(model_name)
 
 
-GloveWordVectors = {}
-for word in model.key_to_index.keys():
-    GloveWordVectors[word] = model.get_vector(word)
-  
-
-# if 'dictionary' not in st.session_state:
-#     st.session_state.dictionary=GloveWordVectors
+def get_glove_vectors():
+    return load_model("glove-wiki-gigaword-50")
 
 def FunctionText2Vec(inpTextData):
     vectorizer = CountVectorizer(stop_words='english')
@@ -30,6 +29,7 @@ def FunctionText2Vec(inpTextData):
     CountVecData=pd.DataFrame(X.toarray(),columns=vectorizer.get_feature_names_out())
     WordsVocab = CountVecData.columns
     W2Vec_Data=pd.DataFrame()
+    glove = get_glove_vectors()
     
     #looping through each row in the data
     for i in range(CountVecData.shape[0]):
@@ -37,8 +37,8 @@ def FunctionText2Vec(inpTextData):
         Sentence = np.zeros(50)
         for word in WordsVocab[CountVecData.iloc[i, :]>=1]:
             #print word
-            if word in GloveWordVectors.keys():
-                Sentence = Sentence + GloveWordVectors[word]
+            if word in glove.key_to_index:
+                Sentence = Sentence + glove.get_vector(word)
         #Append the sentences data frame
         Sentencedf=pd.DataFrame([Sentence])
         W2Vec_Data=pd.concat([W2Vec_Data,Sentencedf],ignore_index=True)

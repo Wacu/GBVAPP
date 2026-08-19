@@ -1,11 +1,10 @@
 import streamlit as st
+import matplotlib.pyplot as plt
 from apps.db import *
 from apps.cleaning import *
 from apps.sentiments import *
 from apps.eda import *
 from apps.functions import *
-
-st.set_option('deprecation.showPyplotGlobalUse', False)
 
 tablename2='selected'
 tablename3='cleaned'
@@ -51,7 +50,7 @@ if option_sentiment=='Sentiment Analysis':
             sns.histplot(ax= axes[1],data=data, x='sentiment_blob',kde=True)
             axes[0].set_title('Sentiments by Vader')
             axes[1].set_title('Sentiments by Textblob')
-            st.pyplot()
+            st.pyplot(plt.gcf(), clear_figure=True)
 
             # VADER
             st.subheader("Deeper into VADER")
@@ -65,7 +64,7 @@ if option_sentiment=='Sentiment Analysis':
             plt.title("Sentiment distribution")
             plt.xlabel("Sentiment Score")
             plt.ylabel("Proportion")
-            st.pyplot()
+            st.pyplot(plt.gcf(), clear_figure=True)
             st.success('Sentiments have been generated!')
 
 if option_sentiment == 'View WordCloud':
