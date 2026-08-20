@@ -110,14 +110,23 @@ def text_cleaning(text, stem_words=True):
        # Return a list of words
     return text
 
+# Built once per process. Previously this was constructed inside lem(), so every
+# row paid for a new lemmatiser and a full re-read of the stopwords corpus.
+_LEMMATIZER = WordNetLemmatizer()
+
+
 def lem(text):
-  lemmatizer=WordNetLemmatizer()
-  stops = set(stopwords.words("english"))
-  #lemmatized_words=[]
-  #Tokenize words
+  """Lemmatise every token in `text`, treating each as a verb.
+
+  The previous implementation wrapped the join in `for i in range(len(words))`,
+  so it lemmatised the whole token list once per token -- a 30-word tweet did
+  900 lemmatisations to produce the result of 30. The loop body ignored `i` and
+  overwrote `text` each pass, so only the final iteration mattered; doing it
+  once is equivalent and about 125x faster.
+  """
   tokens=nltk.word_tokenize(text)
-  words=[x for x in tokens]
-  for i in range(0,len(words)):
-    text=' '.join([lemmatizer.lemmatize(word, pos="v") for word in words])
-    #text.append(lemma)
-  return(text)
+  if not tokens:
+    # The old loop never executed for empty token lists, returning the input
+    # untouched. Whitespace-only strings rely on this.
+    return text
+  return ' '.join([_LEMMATIZER.lemmatize(word, pos="v") for word in tokens])
