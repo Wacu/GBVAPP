@@ -1,7 +1,11 @@
 [theme]
 
 # Primary accent color for interactive elements.
-primaryColor="#FF4B4B"
+# Muted teal rather than Streamlit's default #FF4B4B: the default red is the
+# most recognisable "untouched template" signal, and red-on-dark reads as alarm
+# on an app that labels text as sexual or physical violence. Clears 4.5:1
+# contrast against the background below.
+primaryColor="#2F9C95"
 
 # Background color for the main content area.
 backgroundColor="#0E1117"

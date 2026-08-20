@@ -1,4 +1,13 @@
 import streamlit as st
+
+# set_page_config must precede any Streamlit command, so it goes before the
+# `apps` imports below.
+st.set_page_config(
+    page_title="Clean and explore - GBV APP",
+    page_icon="\U0001f4ca",
+    layout="wide",
+)
+
 import matplotlib.pyplot as plt
 from apps.db import *
 from apps.cleaning import *
@@ -6,10 +15,14 @@ from apps.sentiments import *
 from apps.eda import *
 from apps.functions import *
 
+st.title("2 - Clean and explore")
+st.caption(
+    "Normalise the sampled tweets, then score their sentiment and surface the "
+    "words and phrases that recur across the corpus."
+)
+
 tablename2='selected'
 tablename3='cleaned'
-
-expander_clean=st.expander('This section View the Selected Data and Go through the Cleaning Process👇')
 
 options_clean=st.selectbox('Select Text  Cleaning Steps',['Steps','Text Cleaner'],label_visibility="visible" )
 if options_clean == 'Steps':

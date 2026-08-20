@@ -1,5 +1,5 @@
 import streamlit as st
-st.set_page_config(layout='wide',page_title='NLP-WEB-APP',page_icon='🧮')
+st.set_page_config(layout='wide', page_title='Detect the form - GBV APP', page_icon='📊')
 
 
 import pandas as pd
@@ -55,9 +55,10 @@ def prediction_confidence(model, predicted, proba, row=0):
 
 
 
-st.title('GBV Form Detection')
-st.markdown('This Section detects the form of GBV in Tweets using the Trained models \
-    ')
+st.title('3 - Detect the form')
+st.caption('Classify a tweet into one of four forms of gender-based violence. '
+           'The confidence shown is the probability the model assigned to the '
+           'label it predicted.')
 st.write('\n')
 
 choice=st.sidebar.selectbox('Detect by ',['Text Input', 'Use Cleaned Data'])
