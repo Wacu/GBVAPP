@@ -61,6 +61,31 @@ the new resource.
 
 
 
+## Deploying
+
+The build needs **Python 3.12 or 3.13**, pinned by the `.python-version` file in
+the repo root. This is not cosmetic: `gensim` publishes wheels only up to
+cp313, so on a newer interpreter pip falls back to compiling it from source and
+the build fails against changed CPython internals
+(`'PyLongObject' has no member named 'ob_digit'`). Every other compiled
+dependency here already has cp314 wheels -- gensim is the only one holding the
+version back.
+
+On Render, set the start command so Streamlit binds the injected port:
+
+```
+streamlit run Home.py --server.port $PORT --server.address 0.0.0.0
+```
+
+Two constraints worth knowing before choosing a plan:
+
+- **Memory.** The GloVe vectors alone occupy ~76 MB resident, on top of numpy,
+  scipy, pandas, scikit-learn, matplotlib and Streamlit. A 512 MB instance is
+  tight.
+- **Ephemeral disk.** The NLTK corpora and the 66 MB GloVe model are downloaded
+  at runtime, so any platform that resets its filesystem re-downloads them on
+  every cold start.
+
 ## Configuration
 
 Twitter/X API credentials are read from Streamlit secrets, never committed:
