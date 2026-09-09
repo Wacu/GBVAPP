@@ -3,7 +3,7 @@
 # Floors on streamlit/nltk/Pillow/scikit-learn clear known CVEs (see SECURITY note in README).
 
 # --- app framework ---
-streamlit>=1.61.1
+streamlit>=1.63.0
 
 # --- data / numerics ---
 pandas>=2.2
@@ -21,7 +21,7 @@ textblob>=0.18
 vaderSentiment>=3.3.2
 gensim>=4.4.0
 scikit-learn>=1.9.0
-joblib>=1.4
+joblib>=1.6.0
 
 # --- imaging ---
 Pillow>=12.3.0
