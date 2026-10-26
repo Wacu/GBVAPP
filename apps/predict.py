@@ -32,8 +32,16 @@ NO_VIOLENCE = 'No violence detected'
 def label_for(predicted):
     """Name the form for one predicted class value.
 
-    Anything outside the trained classes falls through to NO_VIOLENCE rather
-    than being presented as one of the four forms.
+    NO_VIOLENCE is a guard against a malformed models.npz, NOT a "none" class:
+    both estimators' `classes_` is [0 1 2 3] and `predict` is an argmax over
+    them, so this fallback is unreachable for any well-formed model. Every
+    text scored here is assigned one of the four forms, including texts that
+    describe no violence at all.
+
+    Giving these models a real "none" would require retraining with labelled
+    negatives. A confidence threshold is not a substitute: median confidence
+    on the `cleaned` table is 48%, and a low score means "cannot tell which
+    form" rather than "not violence".
     """
     return FORM_LABELS.get(int(predicted), NO_VIOLENCE)
 
