@@ -98,6 +98,53 @@ cp .streamlit/secrets.toml.example .streamlit/secrets.toml
 On Streamlit Community Cloud, paste the same contents under **Settings -> Secrets**
 rather than committing a file. `.streamlit/secrets.toml` is gitignored.
 
+## Security
+
+Dependencies are pinned in `requirements-lock.txt` and audited with
+[`pip-audit`](https://pypi.org/project/pip-audit/):
+
+```
+pip install pip-audit
+pip-audit -r requirements-lock.txt
+```
+
+Re-run this after any dependency change, and record the result in the
+lockfile header. GitHub's Dependabot alerts track the **default branch**
+(`master`), so a fix only clears the alert once it lands there.
+
+### Audit of 2026-10-26
+
+46 advisories were open against the previous pinned set. 45 are cleared by
+these bumps:
+
+| Package | Was | Now | Advisories |
+| --- | --- | --- | --- |
+| pillow | 12.3.0 | 13.0.0 | 38, across the image decoders |
+| urllib3 | 2.7.0 | 2.8.0 | 3 |
+| certifi | 2026.7.22 | 2026.10.23 | 1 |
+
+`Pillow>=13` requires `streamlit>=1.63`; streamlit 1.62 and earlier pin
+`pillow<13`. The floor therefore moved to the verified `streamlit>=1.66.1`,
+which also moved `pyarrow` and `starlette` in the lockfile.
+
+Note that Dependabot's own grouped PR (`dependabot/pip/all-minor-patch-*`)
+raises streamlit, pandas, numpy, matplotlib, scikit-learn and joblib --
+**none of which are the vulnerable packages**. Merging it alone does not
+clear these alerts.
+
+### Accepted risk: nltk PYSEC-2026-3740
+
+One advisory is knowingly unfixed, because no patched release exists. It is
+a file-sandbox bypass in nltk's model-artifact APIs: `TransitionParser.train`
+and `.parse`, `AveragedPerceptron.save` and `.load`,
+`PerceptronTagger.save_to_json`, and `save_maxent_params` treat
+caller-controlled model paths as ordinary filenames.
+
+This app calls none of them. Its nltk surface is `word_tokenize`, `ngrams`,
+`FreqDist`, `stopwords`, `WordNetLemmatizer`, `PorterStemmer` and the VADER
+analyser, and it never accepts a model path from a user. Re-evaluate if that
+changes, or when nltk ships a fix.
+
 ## Known issues
 
 - **The trained models no longer depend on a pickle.** `models.joblib` was
