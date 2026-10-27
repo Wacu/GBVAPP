@@ -26,3 +26,9 @@ joblib>=1.4
 
 # --- imaging ---
 Pillow>=13.0.0
+
+# --- Claude classification path ---
+# Only needed for the Claude classifier (apps/claude_classify.py). The app
+# still runs without it: the trained models stay selectable and are the
+# fallback when no API key is set.
+anthropic>=2.3.0

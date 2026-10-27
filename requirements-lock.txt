@@ -6,6 +6,7 @@
 # release. See the SECURITY note in README.md for why it is not reachable
 # from this app.
 altair==6.2.2
+anthropic==2.3.0
 anyio==4.14.2
 attrs==26.1.0
 blinker==1.9.0
