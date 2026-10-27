@@ -12,3 +12,6 @@ __pycache__/
 
 # local data / model artifacts that should not be versioned
 *.db-journal
+
+# local secrets - never commit
+.env
