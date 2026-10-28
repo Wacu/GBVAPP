@@ -82,13 +82,36 @@ if option_sentiment=='Sentiment Analysis':
 
 if option_sentiment == 'View WordCloud':
     yearsummary(data['year'])
-    cloud(' '.join(data['lemma_nostops']))
+
+    # The cloud reads the raw tweet, not lemma_nostops: cleaning removes the
+    # '@' and '#' markers needed to drop usernames, and leaves plurals as
+    # separate terms. See apps/wordcloud_text.py.
+    st.caption(
+        'Terms the tweets were collected by (domesticviolence, violence, gbv '
+        'and similar) are hidden -- they appear in almost every row, so they '
+        'describe the search rather than the findings.'
+    )
+    keep_corpus_terms = st.checkbox('Show the collection terms anyway', value=False)
+    typed = st.text_input(
+        'Also hide these terms (comma-separated)',
+        help='Use this when one term swamps the picture for a particular view.',
+    )
+    extra = [term.strip() for term in typed.split(',') if term.strip()]
+
+    cloud(
+        data['tweet'].tolist(),
+        extra_stopwords=extra,
+        drop_corpus_terms=not keep_corpus_terms,
+    )
     st.success('The Bigger the font, the more the word was used in the tweets')
 
 if option_sentiment == 'Topic Modelling':
-    most_freq_words(data['lemma_nostops'])
-    bigrams(data['lemma_nostops'])
-    trigrams(data['lemma_nostops'])
+    # Raw tweets, for the same reason as the word cloud -- these charts share
+    # its filtering now, so the two views agree on what is frequent.
+    tweets = data['tweet'].tolist()
+    most_freq_words(tweets)
+    bigrams(tweets)
+    trigrams(tweets)
     #st.map(data)
     #pass
     #most_freq_words(df['lemma_nostops'])
