@@ -129,7 +129,12 @@ def classify_one(text, client, model=DEFAULT_MODEL):
     """Classify a single post. Returns (record dict, usage object)."""
     response = client.messages.create(
         model=model,
-        max_tokens=512,
+        # 512 was not enough. Thinking is on by default on this model and its
+        # tokens count against this ceiling, and a tweet in a non-Latin script
+        # (the corpus holds Urdu, Telugu, Malayalam, Bengali and Hindi) costs
+        # several tokens per character -- which the `evidence` field then has
+        # to quote back verbatim. Those rows returned truncated JSON.
+        max_tokens=2048,
         system=[{
             'type': 'text',
             'text': RUBRIC,
@@ -153,42 +158,81 @@ def classify_one(text, client, model=DEFAULT_MODEL):
         category = getattr(response.stop_details, 'category', None)
         raise RuntimeError('Request declined: {}'.format(category))
 
+    if response.stop_reason == 'max_tokens':
+        # Say so plainly. Truncated JSON otherwise surfaced as an opaque
+        # JSONDecodeError that gave no hint the ceiling was the cause.
+        raise RuntimeError(
+            'Response hit max_tokens and the record is incomplete. Raise '
+            'max_tokens for this text.'
+        )
+
     body = ''.join(b.text for b in response.content if b.type == 'text')
     return json.loads(body), response.usage
 
 
-def classify_batch(texts, client=None, model=DEFAULT_MODEL):
+def classify_batch(texts, client=None, model=DEFAULT_MODEL, max_workers=1,
+                   progress=None):
     """Classify every post, returning one row per input.
 
     One call per post, so a failure costs one row rather than the batch. The
     corpus run should go through the Message Batches API instead (50% off);
     this is the interactive path.
 
+    `max_workers` above 1 runs calls concurrently. Results are placed back by
+    index, so the output order always matches the input order regardless of
+    which call finishes first. Leave it at 1 for a handful of texts: the first
+    call is what writes the rubric to the cache, and firing the whole batch at
+    once means several calls race to write it instead of reading it.
+
     Returns (DataFrame, usage totals dict). A row that errored carries the
     reason in `error` and nulls elsewhere, so it stays aligned with its text.
     """
     client = client or build_client()
+    texts = list(texts)
 
-    rows = []
+    rows = [None] * len(texts)
     totals = {'input': 0, 'output': 0, 'cache_read': 0, 'cache_write': 0,
               'calls': 0, 'errors': 0}
 
-    for text in texts:
+    def run(index):
+        text = texts[index]
         row = {'text': text, 'error': None}
         try:
             record, usage = classify_one(text, client, model=model)
         except Exception as err:
             row.update({field: None for field in _FIELDS})
             row['error'] = '{}: {}'.format(type(err).__name__, err)
+            return index, row, None
+        row.update(record)
+        return index, row, usage
+
+    def record_result(index, row, usage):
+        rows[index] = row
+        totals['calls'] += 1
+        if usage is None:
             totals['errors'] += 1
         else:
-            row.update(record)
             totals['input'] += usage.input_tokens
             totals['output'] += usage.output_tokens
             totals['cache_read'] += getattr(usage, 'cache_read_input_tokens', 0) or 0
             totals['cache_write'] += getattr(usage, 'cache_creation_input_tokens', 0) or 0
-        totals['calls'] += 1
-        rows.append(row)
+        if progress:
+            progress(totals['calls'], len(texts))
+
+    if max_workers <= 1 or len(texts) <= 1:
+        for index in range(len(texts)):
+            record_result(*run(index))
+    else:
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        # Send one call first and wait for it, so the rubric is in the cache
+        # before the rest go out together.
+        if texts:
+            record_result(*run(0))
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            futures = [pool.submit(run, i) for i in range(1, len(texts))]
+            for future in as_completed(futures):
+                record_result(*future.result())
 
     return pd.DataFrame(rows, columns=['text'] + _FIELDS + ['error']), totals
 
