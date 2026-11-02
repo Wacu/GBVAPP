@@ -82,13 +82,20 @@ def show_claude_results(results, totals, model):
     left, right = st.columns(2)
     with left:
         st.metric('Rated as violence', '{} of {}'.format(len(violence), len(ok)))
-        if len(violence):
-            st.write('Forms found')
-            st.bar_chart(violence['form'].value_counts())
     with right:
         st.metric('Run cost', '${:.4f}'.format(cost_of(totals, model)))
-        st.write('Text types')
-        st.bar_chart(ok['text_type'].value_counts())
+
+    # A bar chart of one row is an empty rectangle -- the distribution only
+    # means anything once there is a batch to distribute.
+    if len(ok) > 1:
+        chart_left, chart_right = st.columns(2)
+        with chart_left:
+            if len(violence):
+                st.write('Forms found')
+                st.bar_chart(violence['form'].value_counts())
+        with chart_right:
+            st.write('Text types')
+            st.bar_chart(ok['text_type'].value_counts())
 
     st.download_button(
         'Download results as CSV',
