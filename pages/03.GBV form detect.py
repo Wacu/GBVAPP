@@ -63,7 +63,7 @@ def show_claude_results(results, totals, model):
         st.warning('{} of {} rows could not be classified.'.format(
             len(failed), len(results)))
         with st.expander('Show the failures'):
-            st.dataframe(failed[['text', 'error']], use_container_width=True)
+            st.dataframe(failed[['text', 'error']], width='stretch')
 
     ok = results[results['error'].isna()]
     if ok.empty:
@@ -75,7 +75,7 @@ def show_claude_results(results, totals, model):
             'is_violence': 'is violence?',
             'text_type': 'text type',
         }),
-        use_container_width=True,
+        width='stretch',
     )
 
     violence = ok[ok['is_violence'] == True]  # noqa: E712 -- pandas mask
@@ -215,7 +215,7 @@ if choice == "Use Cleaned Data":
                 if skipped:
                     st.caption(f'{skipped} row(s) skipped -- cleaning left them with no words to score.')
 
-                st.dataframe(results, use_container_width=True)
+                st.dataframe(results, width='stretch')
 
                 st.write('Distribution of predicted forms')
                 st.bar_chart(results['form'].value_counts())
