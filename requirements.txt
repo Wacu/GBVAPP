@@ -4,25 +4,25 @@
 # Pillow is floored at 13.0.0: 12.3.0 carries 38 advisories in its image decoders.
 
 # --- app framework ---
-streamlit>=1.66.1
+streamlit>=1.67.0
 
 # --- data / numerics ---
-pandas>=2.2
-numpy>=1.26
+pandas>=3.1.1
+numpy>=2.5.4
 
 # --- plotting ---
-matplotlib>=3.9
+matplotlib>=3.11.2
 seaborn>=0.13.2
 plotly>=5.24
 wordcloud>=1.9.4
 
 # --- NLP / modelling ---
-nltk>=3.10.3
+nltk>=3.10.4
 textblob>=0.18
 vaderSentiment>=3.3.2
 gensim>=4.4.0
-scikit-learn>=1.9.0
-joblib>=1.4
+scikit-learn>=1.9.1
+joblib>=1.6.0
 
 # --- imaging ---
 Pillow>=13.0.0
